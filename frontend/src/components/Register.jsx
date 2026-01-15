@@ -20,12 +20,12 @@ const Register = () => {
     email:data.email,
     password:data.password
     }
-   await axios.post("http://localhost:4001/user/resister",userInfo).then((res)=>{
+   await axios.post("http://localhost:4001/user/register",userInfo).then((res)=>{
       console.log(res.data);
       if(res.data){
         toast.success("Resistered successfully");
         navigate(from,{replace:true});
-        
+
       }localStorage.setItem("Users",JSON.stringify(res.data.user));
     }).catch((err)=>{
       if(err.response){
