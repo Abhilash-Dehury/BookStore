@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
-
+import axios from "axios";
+import toast from "react-hot-toast";
+ 
 const Login = () => {
   const {
     register,
@@ -8,7 +10,31 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = async(data) =>{
+    const userInfo={
+    email:data.email,
+    password:data.password
+    }
+   await axios.post("http://localhost:4001/user/login",userInfo).then((res)=>{
+      console.log(res.data);
+      if(res.data){
+        toast.success("Loggedin successfully");
+         document.getElementById("my_modal_3").close();
+         setTimeout(()=>{
+         window.location.reload();
+         localStorage.setItem("Users",JSON.stringify(res.data.user));
+        },3000)
+        
+
+      }
+    }).catch((err)=>{
+      if(err.response){
+         console.log(err);
+      toast.error("Error:"+err.response.data.message);
+      setTimeout(()=>{},3000);
+      }
+    })
+  };
 
   return (
     <>
@@ -17,13 +43,13 @@ const Login = () => {
           <div className="modal-box">
             <form onSubmit={handleSubmit(onSubmit)} method="dialog">
               {/* Close button - now a proper button that closes the modal */}
-              <button
+              <Link to="/"
                 type="button"
                 onClick={() => document.getElementById("my_modal_3").close()}
                 className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
               >
                 ✕
-              </button>
+              </Link>
 
               <h3 className="font-bold text-lg">Login</h3>
               <div className="mt-4">
@@ -68,3 +94,4 @@ const Login = () => {
 };
 
 export default Login;
+
